@@ -1,0 +1,311 @@
+/* Reset & box-sizing */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  /* Zorg dat de body de hele hoogte inneemt */
+  min-height: 100vh; /* Minimaal viewport hoogte */
+}
+
+/* Theme variables */
+:root {
+  --bg-dark: #0d1b2a;
+  --bg-light: #fdf6e3;
+  --text-dark: #0a1424;
+  --text-light: #f8f1e9;
+  --accent: #e8b923;
+}
+
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+body.light {
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+/* Layout - AANPASSINGEN VOOR FULL-SCREEN SCHERMEN EN CENTRERING */
+/* Zorg dat de app container de volledige hoogte inneemt en flexbox beheert */
+#app {
+    min-height: 100vh; /* Minimaal de viewport hoogte */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Nodig voor absolute children zoals screens */
+}
+
+/* De main sectie moet flexibel de resterende ruimte opvullen */
+main {
+    flex: 1; /* Neemt alle beschikbare verticale ruimte in */
+    position: relative; /* Context voor absoluut gepositioneerde schermen */
+}
+
+/* --- Screen Transitions & Centering --- */
+.screen {
+  transition: opacity 0.5s ease-in-out; /* Animatie voor opacity */
+  position: absolute; /* Absolute positionering binnen de 'main' container */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Neemt 100% van de PARENT (main) hoogte in */
+  opacity: 1; /* Standaard zichtbaar */
+  pointer-events: auto; /* Standaard klikbaar */
+  z-index: 1; /* Standaard z-index voor actieve schermen */
+
+  /* BELANGRIJK: Flexbox instellingen voor CENTREREN VAN INHOUD BINNEN ELK SCHERM */
+  display: flex; /* Maak het scherm zelf een flex container */
+  flex-direction: column; /* Stapel de inhoud verticaal */
+  align-items: center; /* Horizontaal centreren van inhoud binnen het scherm */
+  justify-content: center; /* Verticaal centreren van inhoud binnen het scherm */
+  padding: 1rem; /* Zorg voor padding rondom de content */
+}
+
+.screen.hidden {
+  opacity: 0;
+  pointer-events: none; /* Maak niet-zichtbare schermen niet klikbaar */
+  z-index: 0; /* Verplaats naar de achtergrond */
+  /* display: none wordt via JS toegevoegd na de transitie, zodat het element
+     niet langer ruimte inneemt of interfereert met tabbing. */
+}
+
+/* Achtergrond voor schermen die niet de parallax hebben (passen bij thema) */
+#home-screen,
+#puzzle-screen,
+#poster-experience,
+#detail-pages,
+#secret-poster {
+  background: var(--bg-dark); /* Donkere achtergrond voor deze schermen */
+  /* Zorg dat de text-color ook goed is voor leesbaarheid */
+}
+
+/* Parallax achtergronden - moeten onder de andere schermen liggen */
+.parallax-bg {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Voor echt parallax effect */
+    z-index: 0; /* Lager dan de faderende schermen */
+    /* Zorg dat deze een achtergrond hebben die past bij je thema als ze "bovenkomen" */
+    background-color: var(--bg-dark); /* Basis achtergrondkleur, voor het geval image niet laadt */
+}
+
+/* Header specifieke styling */
+.app-header { /* Gebruik de klasse die je in HTML hebt staan */
+  background: rgba(0,0,0,0.3);
+  z-index: 20; /* Zorg dat de header altijd bovenaan blijft */
+}
+.header-controls { display: flex; gap: 1rem; align-items: center; }
+
+/* Buttons & Inputs */
+button {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+button:hover {
+  background: var(--accent);
+  color: var(--bg-dark);
+  border-color: var(--accent);
+}
+input {
+  padding: 0.5rem;
+  border: 1px solid var(--accent);
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 20rem; /* Aangepast naar 20rem voor betere consistentie */
+  text-align: center;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  transition: border-color 0.3s ease;
+}
+
+/* Tailwind-generated classes for feedback - if they don't load, these act as fallbacks */
+.border-green-500 { border-color: #34D399 !important; } /* Tailwind groen */
+.border-red-500 { border-color: #EF4444 !important; } /* Tailwind rood */
+.text-green-500 { color: #34D399 !important; }
+.text-red-400 { color: #F87171 !important; }
+
+/* Progress Bar Styling */
+.progress-bar {
+  width: 100%;
+  max-width: 400px;
+  height: 8px;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--accent);
+  width: 0%;
+  transition: width 0.7s ease-out;
+  border-radius: 4px;
+}
+
+/* Screen reader only label */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Specifieke styling voor detail content om het ook te centreren */
+#detail-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Belangrijk voor centreren van tekst in details */
+    text-align: center;
+    flex-grow: 1; /* Laat het de beschikbare ruimte vullen */
+}
+/* --- DETAILPAGINA SPECIFIEKE STYLING --- */
+
+/* Enhanced Detail Content Styling */
+#detail-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 1.5rem; /* Increased padding for breathing room */
+    text-align: initial; /* Reset text alignment */
+}
+
+#detail-pages .detail-text-wrapper {
+    max-width: 700px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 1.5rem; /* Increased padding for better layout */
+    text-align: left;
+    background: rgba(0, 0, 0, 0.2); /* Subtle dark overlay */
+    border-radius: 12px; /* Softer corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Deeper shadow for depth */
+    flex-shrink: 0;
+    overflow-y: auto; /* Scrollable if content overflows */
+    max-height: calc(100vh - 200px); /* Adjusted for header and buttons */
+    font-family: 'EB Garamond', serif; /* Consistent with body font */
+    line-height: 1.8; /* Improved readability with more line spacing */
+    color: var(--text-light); /* Light text for dark mode */
+}
+
+body.light #detail-pages .detail-text-wrapper {
+    background: rgba(245, 230, 204, 0.3); /* Light mode background */
+    color: var(--text-dark); /* Dark text for light mode */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+}
+
+#detail-pages h3 {
+    font-size: 1.8em; /* Slightly larger for emphasis */
+    font-family: 'Cinzel', serif; /* Bold, elegant font for titles */
+    color: var(--accent); /* Gold accent for titles */
+    margin-bottom: 1.5rem; /* More space below titles */
+    text-align: center;
+    text-transform: uppercase; /* Adds a regal touch */
+    letter-spacing: 1px; /* Subtle spacing for style */
+}
+
+#detail-pages p {
+    font-size: 1.15em; /* Slightly larger for readability */
+    margin-bottom: 1.2rem; /* Consistent spacing */
+    color: inherit; /* Inherits from wrapper */
+}
+
+#detail-pages ul {
+    margin-left: 2.5rem; /* Increased indent for lists */
+    margin-bottom: 1.5rem;
+    font-size: 1.1em;
+    line-height: 1.8;
+}
+
+#detail-pages li {
+    margin-bottom: 0.8rem; /* More space between list items */
+    position: relative; /* For custom bullet styling */
+}
+
+#detail-pages li::before {
+    content: "•"; /* Custom bullet */
+    color: var(--accent); /* Gold bullet */
+    font-weight: bold;
+    position: absolute;
+    left: -1.5rem; /* Position bullet */
+}
+
+#detail-pages strong {
+    color: var(--accent); /* Highlight strong text */
+    font-weight: 600; /* Slightly lighter bold for elegance */
+}
+
+/* Pas de algemene centrering van #detail-content aan, zodat de wrapper centraal blijft */
+#detail-content {
+    /* behoud je flexbox instellingen */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centreert de inhoud verticaal */
+    align-items: center; /* Centreert de wrapper horizontaal */
+    flex-grow: 1;
+    /* Verwijder text-align: center hier, omdat de wrapper zijn eigen text-align heeft */
+    text-align: initial; /* Reset text-align voor de container zelf */
+    padding: 1rem; /* Zorg voor wat algemene padding aan de randen */
+}
+
+/* Buttons op detailpagina's */
+#detail-pages .navigation-buttons {
+    display: flex;
+    justify-content: center; /* Centreer de knoppen */
+    gap: 1.5rem; /* Ruimte tussen de knoppen */
+    margin-top: 2rem; /* Ruimte boven de knoppen */
+    padding-bottom: 1rem; /* Ruimte onder de knoppen als de container scrollt */
+    flex-shrink: 0; /* Zorg dat de knoppen niet krimpen */
+}
+
+/* Verbeter de stijl van de navigatieknoppen indien nodig */
+#detail-pages .navigation-buttons button {
+    min-width: 120px; /* Zorg dat knoppen een minimale breedte hebben */
+    font-size: 1.1em;
+    padding: 0.8rem 1.5rem;
+}
+
+/* AR Canvas Styling */
+#ar-canvas {
+  width: 100%;
+  height: 30vh; /* Adjustable to fit above audio bar */
+  background: rgba(0, 0, 0, 0.5); /* Placeholder background */
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+    #ar-canvas {
+        height: 20vh; /* Reduced height on mobile */
+    }
+    header h1 { font-size: 1.25rem; }
+    header { padding: 0.5rem 1rem; }
+    .screen { padding: 1rem; }
+    button { font-size: 0.75rem; padding: 0.5rem 0.75rem; }
+    input { font-size: 0.75rem; padding: 0.5rem; }
+    #detail-pages .detail-text-wrapper {
+        max-height: calc(100vh - 150px); /* Adjusted for mobile */
+        padding: 1rem;
+        font-size: 0.95em; /* Slightly smaller text on mobile */
+    }
+    #detail-pages h3 {
+        font-size: 1.5em;
+    }
+    #detail-pages .navigation-buttons button {
+        min-width: 100px;
+        padding: 0.6rem 1rem;
+    }
+}
